@@ -17,6 +17,9 @@ Fuzzy Search:
 Lucene
 - search library that allows text indexing and similarity matching. JAVA INITIALLY but has ports to other languages
 
+
+### A simple way to install NLTK library to use VADER:
+
 ```python
 # for virtual environment
 python -m venv venv
