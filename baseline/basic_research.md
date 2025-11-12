@@ -16,3 +16,29 @@ Fuzzy Search:
 
 Lucene
 - search library that allows text indexing and similarity matching. JAVA INITIALLY but has ports to other languages
+
+```python
+# for virtual environment
+python -m venv venv
+
+# activate virtual environment
+venv\Scripts\activate # Windows
+source venv/bin/activate # macOS or Linux
+
+# install nltk library inside virtual environment
+pip install nltk
+if it doesn't work, then
+pip3 install nltk
+
+# when doen, deactivate
+deactivate
+
+
+# quick test
+from nltk.sentiment import SentimentIntensityAnalyzer
+import nltk
+nltk.download('vader_lexicon')
+
+sia = SentimentIntensityAnalyzer()
+print(sia.polarity_scores("This game is ridiculously good!!!"))
+```
