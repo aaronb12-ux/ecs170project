@@ -1,0 +1,34 @@
+{
+  "manifest_version": 2,
+  "name": "Job Description Extractor",
+  "version": "1.0",
+  "description": "Extracts job descriptions from indeed.com job listings.",
+  
+  "permissions": [
+    "activeTab"
+  ],
+
+  
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://www.indeed.com/jobs*"],
+      "js": ["content.js"]
+    }
+  ],
+
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
+
