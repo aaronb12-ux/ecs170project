@@ -24,11 +24,11 @@ Lucene
 # for virtual environment
 python -m venv venv
 
-# activate virtual environment
+# activate virtual environment - virtual environment is not necessary
 venv\Scripts\activate # Windows
 source venv/bin/activate # macOS or Linux
 
-# install nltk library inside virtual environment
+# install nltk library inside virtual environment 
 pip install nltk
 if it doesn't work, then
 pip3 install nltk
