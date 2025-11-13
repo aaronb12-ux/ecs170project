@@ -55,6 +55,49 @@ print("Similarity(car, banana):", wordnet_similarity("car", "banana"))
 Hybrid Similarity Analysis:
 - It is an integrated method that combines Jaccard similarity and WordNet-based semantic similarity.
 
+Cosine Similarity Analysis:
+- The core idea of  cosine similarity is to represent text as numerical vectors and then calculate the cosine of the angle between these vectors. This can be achieved by using simpler methods like Bag-of-Words (BoW) or TF-IDF for vectorization.
+- Example:
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import re
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
+
+# Sample texts
+text1 = "The quick brown fox jumps over the lazy dog."
+text2 = "A lazy cat sleeps under the warm sun."
+text3 = "The quick brown fox runs fast."
+
+# Preprocessing function
+def preprocess_text(text):
+    text = text.lower()
+    text = re.sub(r'[^\w\s]', '', text) # Remove punctuation
+    tokens = text.split()
+    stop_words = set(stopwords.words('english'))
+    tokens = [word for word in tokens if word not in stop_words]
+    stemmer = PorterStemmer()
+    tokens = [stemmer.stem(word) for word in tokens]
+    return ' '.join(tokens)
+
+# Preprocess the texts
+processed_text1 = preprocess_text(text1)
+processed_text2 = preprocess_text(text2)
+processed_text3 = preprocess_text(text3)
+
+# Create TF-IDF vectors
+vectorizer = TfidfVectorizer()
+tfidf_matrix = vectorizer.fit_transform([processed_text1, processed_text2, processed_text3])
+
+# Calculate cosine similarity
+similarity_text1_text2 = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0][0]
+similarity_text1_text3 = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[2:3])[0][0]
+
+print(f"Cosine similarity between text1 and text2: {similarity_text1_text2}")
+print(f"Cosine similarity between text1 and text3: {similarity_text1_text3}")
+```
+
 # Sentiment Analysis
 
 VADER (Valence Aware Dictionary and sEntiment Reasoner)
