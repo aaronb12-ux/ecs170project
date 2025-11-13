@@ -1,41 +1,47 @@
 group_members:
-  group_member_1:
-    name:
-    student_id:
-    email:
-    github_username:
-  group_member_2:
-    name:
-    student_id:
-    email:
-    github_username:
+  group_member_1: 
+    name: Zeeva Chaver
+    student_id: 920597541
+    email: zgchaver@ucdavis.edu
+    github_username: zeevachaver
+  group_member_2: 
+    name: Anish Ahuja
+    student_id: 921122520
+    email: anahuja@ucdavis.edu
+    github_username: NishEatsWafflez
   group_member_3:
-    name:
-    student_id:
-    email:
-    github_username:
+    name: Joshua Sechrist
+    student_id: 923707804
+    email: jgsechrist@ucdavis.edu
+    github_username: jgsechrist
   group_member_4:
-    name:
-    student_id:
-    email:
-    github_username:
+    name: Aiperi Baktybekova
+    student_id: 920424177
+    email: abekova@ucdavis.edu
+    github_username: AiperiB
   group_member_5:
-    name:
-    student_id:
-    email:
-    github_username:
+    name: Aaron Bernstein
+    student_id: 921026257
+    email: ajbernstein@ucdavis.edu
+    github_username: aaronb12-ux
   group_member_6:
-    name:
-    student_id:
-    email:
-    github_username:
+    name: Joseph Lee
+    student_id: 924069428
+    email: jhblee@ucdavis.edu
+    github_username: jhblee
   group_member_7:
-    name:
-    student_id:
-    email:
-    github_username:
+    name: Nedaa Aljalab
+    student_id: 921457745
+    email: naljalab@ucdavis.edu
+    github_username: nljalab
   group_member_8:
-    name:
-    student_id:
-    email:
-    github_username:
+    name: Alexis Lopez
+    student_id: 920991723
+    email: alslopez@ucdavis.edu
+    github_username: alope881
+  group_member_9:
+    name: Malvina Singh
+    student_id: 921346429
+    email: Molsingh@ucdavis.edu
+    github_username: mollysingh17
+
