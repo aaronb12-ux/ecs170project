@@ -1,4 +1,4 @@
-### Similarity Analysis
+# Similarity Analysis
 
 Jaccard Similarity Analysis:
 - It measures the similarity between two sets. It is calculated by dividing the size of the intersection of the two sets by the size of their union. It is often used to compare the similarity of two text documents or strings based on their shared words or tokens.
@@ -55,7 +55,7 @@ print("Similarity(car, banana):", wordnet_similarity("car", "banana"))
 Hybrid Similarity Analysis:
 - It is an integrated method that combines Jaccard similarity and WordNet-based semantic similarity.
 
-Sentiment Analysis:
+# Sentiment Analysis
 
 VADER (Valence Aware Dictionary and sEntiment Reasoner)
 - it uses a pre-defined dictionary where each word has a sentiment intensity score (positive, negative, neutral)
@@ -75,7 +75,7 @@ Lucene
 - search library that allows text indexing and similarity matching. JAVA INITIALLY but has ports to other languages
 
 
-### A simple way to install NLTK library to use VADER:
+# A simple way to install NLTK library:
 
 ```python
 # for virtual environment
@@ -94,7 +94,7 @@ pip3 install nltk
 deactivate
 
 
-# quick test
+# quick test for VADER
 from nltk.sentiment import SentimentIntensityAnalyzer
 import nltk
 nltk.download('vader_lexicon')
