@@ -1,6 +1,6 @@
 # Similarity Analysis
 
-###### Jaccard Similarity Analysis:
+### Jaccard Similarity Analysis:
 - It measures the similarity between two sets. It is calculated by dividing the size of the intersection of the two sets by the size of their union. It is often used to compare the similarity of two text documents or strings based on their shared words or tokens.
 - Example:
 ```python
@@ -29,7 +29,7 @@ print("Jaccard similarity:", round(jaccard_similarity(a, b), 3))
 
 ```
 
-###### WordNet-based Similarity Analysis:
+### WordNet-based Similarity Analysis:
 - NLTK provides access to WordNet, a lexical database that groups English words into sets of synonyms called synsets and records relationships between them.
 - Example:
 ```python
@@ -52,10 +52,10 @@ print("Similarity(car, banana):", wordnet_similarity("car", "banana"))
 ```
   
 
-###### Hybrid Similarity Analysis:
+### Hybrid Similarity Analysis:
 - It is an integrated method that combines Jaccard similarity and WordNet-based semantic similarity.
 
-###### Cosine Similarity Analysis:
+### Cosine Similarity Analysis:
 - The core idea of  cosine similarity is to represent text as numerical vectors and then calculate the cosine of the angle between these vectors. This can be achieved by using simpler methods like Bag-of-Words (BoW) or TF-IDF for vectorization.
 - Example:
 ```python
