@@ -1,5 +1,10 @@
 # Similarity Analysis
 
+```
+Note: Install NLTK and Sklearn libraries
+pip install nltk
+pip install scikit-learn
+```
 ### Jaccard Similarity Analysis:
 - It measures the similarity between two sets. It is calculated by dividing the size of the intersection of the two sets by the size of their union. It is often used to compare the similarity of two text documents or strings based on their shared words or tokens.
 - Example:
