@@ -4,12 +4,15 @@
 **TF-IDF**
 - a statistical method used in similarity analysis to determine the importance of a word in a document relative to a larger collection of documents.
 - It is calculated by multiplying the Term Frequency (how often a word appears in a document) by the Inverse Document Frequency (how rare a word is across all documents). This score can then be used to represent documents as vectors, allowing for similarity analysis, such as with the cosine similarity metric.
+
 **TF**
 - Term Frequency
 - how often does a word appear in the document?
+
 **IDF**
 - Inverse Document Frequency
 - how rare is this word across all the documents?
+
 **TF-IDF**
 - High
 	- the word appears often in this document, but rare across all the documents
@@ -18,6 +21,7 @@
 - Output
 	- a vector of floats
 	- each number represents the importance of the corresponding word
+ 
 **TF-IDF Similarity in our project**
 - TF: `how often the word appears`
 - IDF: `how the two docs are distingushed from each other`
@@ -36,6 +40,7 @@
 	- it outpus $2\times N$ sparse matrix
 		- Row 0 = TF-IDF vector for resume
 		- Row 1 = TF-IDF vector for job description
+  
 **Consine Similarity in our project**
 - it measures how similar the two documets based on the TF-IDF vectors for resume and job description
 - 1.0 = identical
