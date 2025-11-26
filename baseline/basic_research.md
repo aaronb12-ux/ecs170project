@@ -1,4 +1,162 @@
-Sentiment Analysis:
+# Baseline Model
+
+## TF-IDF + Cosine Similarity 
+**TF-IDF**
+- a statistical method used in similarity analysis to determine the importance of a word in a document relative to a larger collection of documents.
+- It is calculated by multiplying the Term Frequency (how often a word appears in a document) by the Inverse Document Frequency (how rare a word is across all documents). This score can then be used to represent documents as vectors, allowing for similarity analysis, such as with the cosine similarity metric.
+
+**TF**
+- Term Frequency
+- how often does a word appear in the document?
+
+**IDF**
+- Inverse Document Frequency
+- how rare is this word across all the documents?
+
+**TF-IDF**
+- High
+	- the word appears often in this document, but rare across all the documents
+- Low
+	- the word is not meaningful or special
+- Output
+	- a vector of floats
+	- each number represents the importance of the corresponding word
+ 
+**TF-IDF Similarity in our project**
+- TF: `how often the word appears`
+- IDF: `how the two docs are distingushed from each other`
+	- IDF High
+		- The word appears only in the job description or resume
+	- IDF Low
+		- The word appears in both documents
+- TF-IDF High
+	- if the word doesn't appear in the resume
+	- extract the word as top job keywords
+	- helps detect missing skills
+- Conclusion
+	- it downweights common words
+	- it creates vectors for cosine similarity
+	- it is great for detecting what's missing or important job keywords
+	- it outpus $2\times N$ sparse matrix
+		- Row 0 = TF-IDF vector for resume
+		- Row 1 = TF-IDF vector for job description
+  
+**Consine Similarity in our project**
+- it measures how similar the two documets based on the TF-IDF vectors for resume and job description
+- 1.0 = identical
+- 0.0-0.3 = weak match
+- it ignores the length of the documents
+	- so the length of the two documetns can be different
+- it focuses on matching patterns of important words (high TF-IDF values)
+- **high consine similarity**
+	- the resume contains many of the important terms found in the job description
+
+# Similarity Analysis
+
+```
+Note: Install NLTK and Sklearn libraries
+pip install nltk
+pip install scikit-learn
+```
+### Jaccard Similarity Analysis:
+- It measures the similarity between two sets. It is calculated by dividing the size of the intersection of the two sets by the size of their union. It is often used to compare the similarity of two text documents or strings based on their shared words or tokens.
+- Example:
+```python
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+import nltk
+import string
+
+nltk.download('punkt_tab')
+nltk.download("punkt")
+nltk.download("stopwords")
+
+def jaccard_similarity(text1, text2):
+    stop = set(stopwords.words("english"))
+    # tokenize and clean
+    def clean(t):
+        return {w.lower() for w in word_tokenize(t)
+                if w.isalnum() and w.lower() not in stop}
+    set1, set2 = clean(text1), clean(text2)
+    return len(set1 & set2) / len(set1 | set2 or {1})
+
+a = "The quick brown fox jumps over the lazy dog"
+b = "A quick brown cat sleeps near a lazy dog"
+
+print("Jaccard similarity:", round(jaccard_similarity(a, b), 3))
+
+```
+
+### WordNet-based Similarity Analysis:
+- NLTK provides access to WordNet, a lexical database that groups English words into sets of synonyms called synsets and records relationships between them.
+- Example:
+```python
+from nltk.corpus import wordnet as wn
+import nltk
+nltk.download("wordnet")
+nltk.download("omw-1.4")
+
+def wordnet_similarity(word1, word2):
+    syns1 = wn.synsets(word1)
+    syns2 = wn.synsets(word2)
+    if not syns1 or not syns2:
+        return 0
+    # pick max path similarity among all sense pairs
+    sims = [s1.path_similarity(s2) or 0 for s1 in syns1 for s2 in syns2]
+    return max(sims)
+
+print("Similarity(car, automobile):", wordnet_similarity("car", "automobile"))
+print("Similarity(car, banana):", wordnet_similarity("car", "banana"))
+```
+  
+
+### Hybrid Similarity Analysis:
+- It is an integrated method that combines Jaccard similarity and WordNet-based semantic similarity.
+
+### Cosine Similarity Analysis:
+- The core idea of  cosine similarity is to represent text as numerical vectors and then calculate the cosine of the angle between these vectors. This can be achieved by using simpler methods like Bag-of-Words (BoW) or TF-IDF for vectorization.
+- Example:
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import re
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
+
+# Sample texts
+text1 = "The quick brown fox jumps over the lazy dog."
+text2 = "A lazy cat sleeps under the warm sun."
+text3 = "The quick brown fox runs fast."
+
+# Preprocessing function
+def preprocess_text(text):
+    text = text.lower()
+    text = re.sub(r'[^\w\s]', '', text) # Remove punctuation
+    tokens = text.split()
+    stop_words = set(stopwords.words('english'))
+    tokens = [word for word in tokens if word not in stop_words]
+    stemmer = PorterStemmer()
+    tokens = [stemmer.stem(word) for word in tokens]
+    return ' '.join(tokens)
+
+# Preprocess the texts
+processed_text1 = preprocess_text(text1)
+processed_text2 = preprocess_text(text2)
+processed_text3 = preprocess_text(text3)
+
+# Create TF-IDF vectors
+vectorizer = TfidfVectorizer()
+tfidf_matrix = vectorizer.fit_transform([processed_text1, processed_text2, processed_text3])
+
+# Calculate cosine similarity
+similarity_text1_text2 = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0][0]
+similarity_text1_text3 = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[2:3])[0][0]
+
+print(f"Cosine similarity between text1 and text2: {similarity_text1_text2}")
+print(f"Cosine similarity between text1 and text3: {similarity_text1_text3}")
+```
+
+# Sentiment Analysis
 
 VADER (Valence Aware Dictionary and sEntiment Reasoner)
 - it uses a pre-defined dictionary where each word has a sentiment intensity score (positive, negative, neutral)
@@ -16,3 +174,35 @@ Fuzzy Search:
 
 Lucene
 - search library that allows text indexing and similarity matching. JAVA INITIALLY but has ports to other languages
+
+
+# A simple way to install NLTK library:
+
+```python
+# for virtual environment
+python -m venv venv
+
+# activate virtual environment - virtual environment is not necessary
+venv\Scripts\activate # Windows
+source venv/bin/activate # macOS or Linux
+
+# install nltk library inside virtual environment 
+pip install nltk
+if it doesn't work, then
+pip3 install nltk
+
+# when doen, deactivate
+deactivate
+
+
+# quick test for VADER
+from nltk.sentiment import SentimentIntensityAnalyzer
+import nltk
+nltk.download('vader_lexicon')
+
+sia = SentimentIntensityAnalyzer()
+print(sia.polarity_scores("This game is ridiculously good!!!"))
+
+# expected output of the above code
+{'neg': 0.262, 'neu': 0.327, 'pos': 0.412, 'compound': 0.3348}
+```
