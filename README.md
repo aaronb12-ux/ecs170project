@@ -11,3 +11,5 @@ Project Check-In due: Wed, Nov 12
 [Check in - notes](https://docs.google.com/document/d/1lg-HZ5qaZAVndBRkQJRnd19rt7okiUA_lycmU1lyvNk/edit?usp=sharing)
 
 [Project Check-In Instructions](https://g-simmons.github.io/ECS170/assignments/project/project_check_in#instructions)
+
+[Project Report Notes](https://docs.google.com/document/d/1mG-0fcTx8m0SSDCwANBp1XRQl2XuZF5KqG_k8ndqcFY/edit?usp=sharing)
