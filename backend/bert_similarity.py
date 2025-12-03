@@ -3,73 +3,99 @@
 # ref: https://www.geeksforgeeks.org/python/how-to-read-from-a-file-in-python/ 
 # ref (tokenize text into sentences): https://www.geeksforgeeks.org/nlp/tokenize-text-using-nltk-python/
 
+import re
 import torch
 from transformers import BertTokenizer, BertModel
 from sklearn.metrics.pairwise import cosine_similarity
 
 # model import
-tokenizer = BertTokenizer.from_pretrained("google-bert/bert-base-uncased")
-model = BertModel.from_pretrained("google-bert/bert-base-uncased") 
+def load_bert():
+    tokenizer = BertTokenizer.from_pretrained("google-bert/bert-base-uncased")
+    model = BertModel.from_pretrained("google-bert/bert-base-uncased")
+    return tokenizer, model
 
 # process txt files into sentences
-file_jd = open("jobdescription.txt", "r")
-content_jd = file_jd.read()
-file_jd.close()
+def load_file(path):
+    with open(path, "r") as f:
+        return f.read()
 
-file_resume = open("resume.txt", "r")
-content_resume = file_resume.read()
-file_resume.close()
+# clean text    
+def clean_lines(text, min_length=5):
+    lines = text.splitlines()
+    return [ln.strip() for ln in lines if len(ln.strip()) > min_length]
+   
+# embeddings 
 
-lines_jd_raw = content_jd.splitlines()
-lines_resume_raw = content_resume.splitlines()
-
-# remove short or empty lines
-lines_jd = []
-for line in lines_jd_raw:
-    stripped_line = line.strip()
-    if len(stripped_line) > 5:
-        lines_jd.append(stripped_line)
-
-lines_resume = []
-for line in lines_resume_raw:
-    stripped_line = line.strip()
-    if len(stripped_line) > 5:
-        lines_resume.append(stripped_line)
-
-# generate embeddings 
-embeddings_jd = []
-for sentence in lines_jd:
+def embed_sentence(sentence, tokenizer, model):
     inputs = tokenizer(sentence, return_tensors="pt", truncation=True)
     outputs = model(**inputs)
-    word_embeddings = outputs.last_hidden_state
-    sentence_embedding = word_embeddings.mean(dim=1)
-    embeddings_jd.append(sentence_embedding)
+    emb = outputs.last_hidden_state.mean(dim=1)
+    return emb
 
-embeddings_resume = []
-for sentence in lines_resume:
-    inputs = tokenizer(sentence, return_tensors="pt", truncation=True)
-    outputs = model(**inputs)
-    word_embeddings = outputs.last_hidden_state
-    sentence_embedding = word_embeddings.mean(dim=1)
-    embeddings_resume.append(sentence_embedding)
+def embed_lines(lines, tokenizer, model):
+    embeddings = []
+    for sent in lines:
+        embeddings.append(embed_sentence(sent, tokenizer, model))
+    return embeddings
+
+# cosine similarity 
+def compute_file_similarity(jd_matrix, resume_matrix):
+    return cosine_similarity(
+        jd_matrix.mean(axis=0, keepdims=True),
+        resume_matrix.mean(axis=0, keepdims=True)
+    )[0][0]
 
 
-# avg all sentence embeddings 
-jd_matrix = torch.cat(embeddings_jd, dim=0).detach().numpy()  # shape: (num_jd_sentences, hidden_size)
-resume_matrix = torch.cat(embeddings_resume, dim=0).detach().numpy()  # shape: (num_resume_sentences, hidden_size)
+def get_similar_pairs(lines_jd, embeddings_jd, lines_resume, embeddings_resume, th=0.75):
+    pairs = []
+    for i, e_jd in enumerate(embeddings_jd):
+        for j, e_res in enumerate(embeddings_resume):
+            score = cosine_similarity(
+                e_jd.detach().numpy(),
+                e_res.detach().numpy()
+            )[0][0]
+            if score >= th:
+                pairs.append((i, j, score))
+    return pairs
 
-overall_score = cosine_similarity(jd_matrix.mean(axis=0, keepdims=True),
-                                  resume_matrix.mean(axis=0, keepdims=True))[0][0]
+# get keywords
+def extract_keywords(jd_sentence, max_keywords=3):
+    words = re.findall(r"[A-Za-z]+", jd_sentence.lower())
+    stop = {
+        "and","the","for","with","that","from","this","will","your",
+        "into","using","ability","skills","experience","work"
+    }
+    filtered = [w for w in words if len(w) > 4 and w not in stop]
+    return filtered[:max_keywords]
 
-print(f"Overall file similarity score: {overall_score:.4f}")
+# return similarity scores/pairs
+def analyze_files(jd_text, resume_text, th=0.75):
 
-# generate similarity scores using cosine similarity 
-for i, embedding_jd in enumerate(embeddings_jd):
-    for j, embedding_resume in enumerate(embeddings_resume):
-        # pass vectors as inputs
-        score = cosine_similarity(embedding_jd.detach().numpy(), embedding_resume.detach().numpy())[0][0]
-        
-        if score > 0.75: # around 0.5, get matches between job titles and description lines - not useful 
-            print(f"\nSimilarity score: {score:.4f}")
-            print(f"Job description sentence: {lines_jd[i]}")
-            print(f"Resume sentence: {lines_resume[j]}")
+    # Clean lines
+    lines_jd = clean_lines(jd_text)
+    lines_resume = clean_lines(resume_text)
+
+    # Load embedding model
+    tokenizer, model = load_bert()
+
+    # Generate embeddings
+    emb_jd = embed_lines(lines_jd, tokenizer, model)
+    emb_resume = embed_lines(lines_resume, tokenizer, model)
+
+    # Build matrices
+    jd_matrix = torch.cat(emb_jd, dim=0).detach().numpy()
+    resume_matrix = torch.cat(emb_resume, dim=0).detach().numpy()
+
+    # File similarity
+    file_score = compute_file_similarity(jd_matrix, resume_matrix)
+
+    # Sentence-level matches
+    pairs = get_similar_pairs(lines_jd, emb_jd, lines_resume, emb_resume, th)
+
+    return {
+        "file_similarity": file_score,
+        "lines_jd": lines_jd,
+        "lines_resume": lines_resume,
+        "similar_pairs": pairs
+    }
+
