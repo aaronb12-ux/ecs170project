@@ -1,4 +1,4 @@
-from baseline.skipwords import skipWords
+from text_overlap.skipwords import skipWords
 
 def read_file(file_name):
     try:
