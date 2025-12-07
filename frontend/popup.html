@@ -1,72 +1,56 @@
 <!doctype html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <title>Job Description Analyzer</title>
-  <style>
-    body { font-family: Arial, sans-serif; width:420px; padding:12px; }
-    .tabs { display:flex; gap:8px; margin-bottom:12px; }
-    .tab { padding:8px 12px; cursor:pointer; border:1px solid #ccc; border-radius:4px; background:#f6f6f6; }
-    .tab.active { background:#fff; border-bottom:2px solid #007acc; }
-    .panel { display:none; }
-    .panel.active { display:block; }
-    textarea { width:100%; height:140px; box-sizing:border-box; }
-    #result { white-space:pre-wrap; background:#f4f4f4; padding:8px; height:140px; overflow:auto; }
-    .row { margin-bottom:8px; }
-    button { padding:6px 10px; }
-  </style>
+<meta charset="utf-8" />
+<title>Job Description Analyzer</title>
+<link rel="stylesheet" type="text/css" href="styles.css">
+
 </head>
 <body>
-  <div class="tabs">
-    <div id="tab-resume" class="tab active">Resume</div>
-    <div id="tab-analyze" class="tab">Analyze</div>
-    <div id="tab-help" class="tab">Help</div>
-  </div>
-
-  <div id="panel-resume" class="panel active">
-    <div class="row">
-      <label for="resume-text">Stored resume (extension storage):</label>
-      <textarea id="resume-text" placeholder="No resume stored yet."></textarea>
-    </div>
-    <div class="row">
-      <input type="file" id="resume-file-input" accept=".txt" />
-      <button id="resume-upload-button">Upload & Store</button>
-      <button id="resume-save-button">Save Edited Text</button>
-    </div>
-    <div class="row">
-      <div id="resume-status"></div>
-    </div>
-  </div>
-
-  <div id="panel-analyze" class="panel">
-    <div class="row">
-      <button id="extract-button">Extract Job Text & Analyze</button>
-      <button id="analyze-manual-button">Analyze Manual Job Text</button>
-    </div>
-    <div class="row">
-      <label for="manual-job-text">Manual job text (optional):</label>
-      <textarea id="manual-job-text" placeholder="Paste job description here to analyze without extracting from active tab."></textarea>
-    </div>
-    <div class="row">
-      <label>API result:</label>
-      <pre id="result">No result yet.</pre>
-    </div>
-  </div>
-
-  <div id="panel-help" class="panel">
-  <div class="row">
-    <h4>How to Use</h1>
-    <p>This extension compares a resume and job description. It returns the similarity score and key words between the two. </p>
-    <p>1. Paste in your resume in the text box as text, or upload it as a .txt file on the 'Resume' tab on the top left. You are able to save either the file or text through the appropriate save button on the 'Resume' tab as well.</p>
-    <p>2. Now head over to a job description of interest  (Note that the extension only works with Indeed.com as of now). From here, you can either copy and paste the
-      job text into the text box on the 'Analyze' tab, or you can use the extension to gather the job description data for you by pressing the 'Extract Job Text and Analyze Tab'.
-    </p>
-    <p>After clicking the respective button, you should see in the text box under 'API response' the similariy score between your resume and job description.</p>
-   
-  </div>
+<div class="tabs">
+<div id="tab-resume" class="tab active">Resume</div>
+<div id="tab-analyze" class="tab">Analyze</div>
+<div id="tab-help" class="tab">Help</div>
 </div>
-
-  <script src="content.js"></script>
+<div id="panel-resume" class="panel active">
+<div class="row">
+<label for="resume-text">Stored resume (extension storage):</label>
+<textarea id="resume-text" placeholder="No resume stored yet."></textarea>
+</div>
+<div class="row">
+<input type="file" id="resume-file-input" accept=".txt" />
+<button id="resume-upload-button">Upload & Store</button>
+<button id="resume-save-button">Save Edited Text</button>
+</div>
+<div class="row">
+<div id="resume-status"></div>
+</div>
+</div>
+<div id="panel-analyze" class="panel">
+<div class="row">
+<button id="extract-button">Extract Job Text & Analyze</button>
+<button id="analyze-manual-button">Analyze Manual Job Text</button>
+</div>
+<div class="row">
+<label for="manual-job-text">Manual job text (optional):</label>
+<textarea id="manual-job-text" placeholder="Paste job description here to analyze without extracting from active tab."></textarea>
+</div>
+<div class="row">
+<label>API result:</label>
+<pre id="result">No result yet.</pre>
+</div>
+</div>
+<div id="panel-help" class="panel">
+<div class="row">
+<h4>How to Use</h4>
+<p>This extension compares a resume and job description. It returns the similarity score and key words between the two. </p>
+<p>1. Paste in your resume in the text box as text, or upload it as a .txt file on the 'Resume' tab on the top left. You are able to save either the file or text through the appropriate save button on the 'Resume' tab as well.</p>
+<p>2. Now head over to a job description of interest  (Note that the extension only works with Indeed.com as of now). From here, you can either copy and paste the
+      job text into the text box on the 'Analyze' tab, or you can use the extension to gather the job description data for you by pressing the 'Extract Job Text and Analyze Tab'.
+</p>
+<p>After clicking the respective button, you should see in the text box under 'API response' the similariy score between your resume and job description.</p>
+</div>
+</div>
+<script src="content.js"></script>
 </body>
 </html>
-

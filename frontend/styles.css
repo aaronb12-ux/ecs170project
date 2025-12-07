@@ -1,0 +1,155 @@
+body { 
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  width: 420px; 
+  padding: 16px; 
+  background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
+  margin: 0;
+}
+
+.tabs { 
+  display: flex; 
+  gap: 4px; 
+  margin-bottom: 16px; 
+  border-bottom: 2px solid #e1e4e8;
+}
+
+.tab { 
+  padding: 10px 16px; 
+  cursor: pointer; 
+  border: none;
+  border-radius: 6px 6px 0 0; 
+  background: transparent;
+  color: #586069;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.tab:hover {
+  background: #f6f8fa;
+  color: #24292e;
+}
+
+.tab.active { 
+  background: #ffffff; 
+  color: #0366d6;
+  box-shadow: inset 0 -2px 0 #0366d6;
+}
+
+.panel { 
+  display: none; 
+}
+
+.panel.active { 
+  display: block; 
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+textarea { 
+  width: 100%; 
+  height: 140px; 
+  box-sizing: border-box;
+  border: 1px solid #d1d5da;
+  border-radius: 6px;
+  padding: 10px;
+  font-family: inherit;
+  font-size: 13px;
+  resize: vertical;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #0366d6;
+  box-shadow: 0 0 0 3px rgba(3, 102, 214, 0.1);
+}
+
+#result { 
+  white-space: pre-wrap; 
+  background: #f6f8fa; 
+  padding: 12px; 
+  height: 140px; 
+  overflow: auto;
+  border: 1px solid #e1e4e8;
+  border-radius: 6px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: #24292e;
+}
+
+.row { 
+  margin-bottom: 12px; 
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #24292e;
+}
+
+button { 
+  padding: 8px 14px;
+  background: #0366d6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+button:hover {
+  background: #0256c4;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+button:not(:last-child) {
+  margin-right: 6px;
+}
+
+input[type="file"] {
+  font-size: 12px;
+  padding: 4px;
+  margin-bottom: 8px;
+}
+
+#resume-status {
+  font-size: 12px;
+  color: #586069;
+  padding: 6px 10px;
+  background: #f6f8fa;
+  border-radius: 4px;
+  border-left: 3px solid #28a745;
+  min-height: 16px;
+}
+
+h4 {
+  margin: 0 0 12px 0;
+  color: #24292e;
+  font-size: 16px;
+}
+
+p {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #586069;
+  margin: 0 0 12px 0;
+}
+
+#panel-help {
+  background: white;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #e1e4e8;
+}
