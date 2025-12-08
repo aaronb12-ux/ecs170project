@@ -14,17 +14,10 @@ def load_bert():
     model = BertModel.from_pretrained("google-bert/bert-base-uncased")
     return tokenizer, model
 
-# process txt files into sentences
 def load_file(path):
     with open(path, "r") as f:
         return f.read()
 
-# clean text    
-def clean_lines(text, min_length=5):
-    lines = text.splitlines()
-    return [ln.strip() for ln in lines if len(ln.strip()) > min_length]
-   
-# embeddings 
 
 def embed_sentence(sentence, tokenizer, model):
     inputs = tokenizer(sentence, return_tensors="pt", truncation=True)
@@ -58,7 +51,6 @@ def get_similar_pairs(lines_jd, embeddings_jd, lines_resume, embeddings_resume, 
                 pairs.append((i, j, score))
     return pairs
 
-# get keywords
 def extract_keywords(jd_sentence, max_keywords=3):
     words = re.findall(r"[A-Za-z]+", jd_sentence.lower())
     stop = {
@@ -71,25 +63,19 @@ def extract_keywords(jd_sentence, max_keywords=3):
 # return similarity scores/pairs
 def analyze_files(jd_text, resume_text, th=0.75):
 
-    # Clean lines
-    lines_jd = clean_lines(jd_text)
-    lines_resume = clean_lines(resume_text)
+    lines_jd = [line.strip() for line in jd_text.splitlines() if line.strip()]
+    lines_resume = [line.strip() for line in resume_text.splitlines() if line.strip()]
 
-    # Load embedding model
     tokenizer, model = load_bert()
 
-    # Generate embeddings
     emb_jd = embed_lines(lines_jd, tokenizer, model)
     emb_resume = embed_lines(lines_resume, tokenizer, model)
 
-    # Build matrices
     jd_matrix = torch.cat(emb_jd, dim=0).detach().numpy()
     resume_matrix = torch.cat(emb_resume, dim=0).detach().numpy()
 
-    # File similarity
     file_score = compute_file_similarity(jd_matrix, resume_matrix)
 
-    # Sentence-level matches
     pairs = get_similar_pairs(lines_jd, emb_jd, lines_resume, emb_resume, th)
 
     return {
@@ -97,5 +83,34 @@ def analyze_files(jd_text, resume_text, th=0.75):
         "lines_jd": lines_jd,
         "lines_resume": lines_resume,
         "similar_pairs": pairs
+    }
+
+def format_similarity_json_sorted(analysis):
+    jd_to_best_match = {}
+    for jd_idx, res_idx, score in analysis["similar_pairs"]:
+        if jd_idx not in jd_to_best_match or score > jd_to_best_match[jd_idx][1]:
+            jd_to_best_match[jd_idx] = (analysis["lines_resume"][res_idx], score)
+    
+    strengths_tuples = [
+        (analysis["lines_jd"][jd_idx], res_line, score)
+        for jd_idx, (res_line, score) in jd_to_best_match.items()
+    ]
+    
+    strengths_tuples.sort(key=lambda x: x[2], reverse=True)
+    
+    strengths = [
+        f"{jd} | {res} | similarity: {score:.4f}" for jd, res, score in strengths_tuples
+    ]
+    
+    # weakness: job description lines without a match
+    matched_jd_indices = set(jd_to_best_match.keys())
+    weaknesses = [
+        line for i, line in enumerate(analysis["lines_jd"]) if i not in matched_jd_indices
+    ]
+    
+    return {
+        "similarity_score": float(analysis["file_similarity"]),
+        "strengths": strengths,
+        "weaknesses": weaknesses
     }
 

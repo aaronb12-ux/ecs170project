@@ -8,7 +8,6 @@ import numpy as np
 # smaller model (100-dim): "glove-wiki-gigaword-100"
 model = api.load("word2vec-google-news-300") # 300-dim embeddings
 
-# read files
 def read_file_lines(file_path):
     with open(file_path, "r") as f:
         lines = [line.strip() for line in f.readlines()]
@@ -50,8 +49,8 @@ def sentence_level_similarity(lines_jd, embeddings_jd, lines_resume, embeddings_
 
 def run_w2v(resume_text, jd_text, th=0.55):
 
-    lines_jd = [line.strip() for line in jd_text.splitlines()]
-    lines_resume = [line.strip() for line in resume_text.splitlines()]
+    lines_jd = [line.strip() for line in jd_text.splitlines() if line.strip()]
+    lines_resume = [line.strip() for line in resume_text.splitlines() if line.strip()]
 
     embeddings_jd = sentence_embeddings(lines_jd, model)
     embeddings_resume = sentence_embeddings(lines_resume, model)
@@ -61,5 +60,30 @@ def run_w2v(resume_text, jd_text, th=0.55):
 
     return {
         "overall_score": overall_score,
-        "sentence_matches": sentence_matches
+        "sentence_matches": sentence_matches,
+        "all_jd_lines": lines_jd,      
+        "all_resume_lines": lines_resume
     }
+
+def format_w2v_json_sorted(analysis):
+    jd_to_best_match = {}
+    for match in analysis["sentence_matches"]:
+        jd_line = match["jd_sentence"]
+        res_line = match["resume_sentence"]
+        score = float(match["similarity"])
+        if jd_line not in jd_to_best_match or score > jd_to_best_match[jd_line][1]:
+            jd_to_best_match[jd_line] = (res_line, score)
+    
+    strengths_tuples = [(jd, res, score) for jd, (res, score) in jd_to_best_match.items()]
+    strengths_tuples.sort(key=lambda x: x[2], reverse=True)
+    strengths = [f"{jd} | {res} | similarity: {score:.4f}" for jd, res, score in strengths_tuples]
+
+    all_jd_lines = set([match["jd_sentence"] for match in analysis["sentence_matches"]])
+    weaknesses = [jd for jd in analysis.get("all_jd_lines", []) if jd not in all_jd_lines]
+
+    return {
+        "similarity_score": float(analysis["overall_score"]),
+        "strengths": strengths,
+        "weaknesses": weaknesses
+    }
+
