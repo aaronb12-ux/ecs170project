@@ -151,24 +151,23 @@ document.getElementById('analyze-manual-button').addEventListener('click', async
 
     const data = await callAnalyzeAPI(resumeText, jobText);
 
-    const formattedResponse = `
-      <h3>Analysis Result</h3>
-      <p><strong>Score:</strong> ${(data.score * 100).toFixed(2)}%</p>
-      <h4>Strengths</h4>
-      <ul>
-        ${data.strengths.map(strength => {
-          const parts = strength.split('|');
-          const description = parts[0].trim();
-          const similarity = parts[parts.length - 1].trim();
-          return `<li>${description} - <strong>${similarity}</strong></li>`;
-        }).join('')}
-      </ul>
-      <h4>Weaknesses</h4>
-      <ul>
-        ${data.weaknesses.map(weakness => `<li>${weakness}</li>`).join('')}
-      </ul>
-    `;
-
+	  const formattedResponse = `
+<strong>Score:</strong> ${(data.score * 100).toFixed(2)}%
+<strong>Strengths:</strong><ul>
+${data.strengths
+.map(strength => strength.trim())
+.filter(strength => strength) // Remove empty entries
+.map(strength => {
+const parts = strength.split('|');
+const description = parts[0]?.trim() || '';
+const similarity = parts[parts.length - 1]?.trim().replace('similarity: ', '') || '';
+return `<li>${description}</li>`;
+}).join('')}</ul><strong>Weaknesses:</strong><ul>
+${data.weaknesses
+.map(weakness => weakness.trim())
+.filter(weakness => weakness) // Remove empty entries
+.map(weakness => `<li>${weakness}</li>`).join('')}</ul>
+`;
     document.getElementById('result').innerHTML = formattedResponse;
   } catch (err) {
     console.error(err);
